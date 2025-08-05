@@ -1,0 +1,7 @@
+tôi cần bạn giúp tôi code giao diện module cá nhận  lập phiếu xuất hàng, giao diện module phải như trong bản word tôi làm 
+tôi nên code = netbeans hay vs code 
+đầu tiên hãy viết cấu trúc folder 
+tiếp theo là hướng dẫn code từng fille code một  và cách chạy file , chạy xem ổn ko đã thì mới code file tiếp theo 
+oke Ko  
+cấu trúc project đơn giản thôi cứ MVC là dc , còn lại đơn giản thôi 
+nên dùng vs code hay netbeans

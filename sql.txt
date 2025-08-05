@@ -1,0 +1,97 @@
+-- =================================================================
+-- SCRIPT SQL HOÀN CHỈNH CHO MODULE "LẬP PHIẾU XUẤT HÀNG"
+-- DỰA THEO CHƯƠNG 4 - TÀI LIỆU KIỂM THỬ
+-- =================================================================
+
+-- Chọn cơ sở dữ liệu để làm việc
+USE quanlykhovattu;
+
+-- BƯỚC 1: XÓA CÁC BẢNG CŨ ĐỂ LÀM SẠCH (THEO ĐÚNG THỨ TỰ KHÓA NGOẠI)
+DROP TABLE IF EXISTS tblMatHangXuat28;
+DROP TABLE IF EXISTS tblHoaDonXuatHang28;
+DROP TABLE IF EXISTS tblHoaDonXuat28;
+DROP TABLE IF EXISTS tblDaiLyCon; -- Đổi tên thành tblDaiLyCon28
+DROP TABLE IF EXISTS tblHangHoa; -- Đổi tên thành tblHangHoa28
+DROP TABLE IF EXISTS tblNhanVien; -- Đổi tên thành tblNhanVien28
+
+-- BƯỚC 2: TẠO LẠI CÁC BẢNG VỚI CẤU TRÚC CHUẨN
+
+-- Bảng Nhân viên
+CREATE TABLE tblNhanVien28 (
+    maNV VARCHAR(50) PRIMARY KEY,
+    hoTenNV VARCHAR(255) NOT NULL,
+    matKhau VARCHAR(255)
+);
+
+-- Bảng Đại lý con
+CREATE TABLE tblDaiLyCon28 (
+    maDL VARCHAR(50) PRIMARY KEY,
+    tenDL VARCHAR(255) NOT NULL,
+    diaChi VARCHAR(255),
+    soDT VARCHAR(20)
+);
+
+-- Bảng Hàng hóa
+CREATE TABLE tblHangHoa28 (
+    maHang VARCHAR(50) PRIMARY KEY,
+    tenHang VARCHAR(255) NOT NULL,
+    moTa TEXT,
+    soLuongTrongKho INT
+);
+
+-- Bảng Hóa đơn xuất (Lưu sự kiện xuất)
+CREATE TABLE tblHoaDonXuat28 (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    maDL VARCHAR(50),
+    ngayXuat DATE,
+    FOREIGN KEY (maDL) REFERENCES tblDaiLyCon28(maDL)
+);
+
+-- Bảng Hóa đơn xuất hàng (Lưu thông tin tài chính của hóa đơn)
+CREATE TABLE tblHoaDonXuatHang28 (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    maNV VARCHAR(50),
+    IDHoaDonXuat INT,
+    tongTien FLOAT,
+    FOREIGN KEY (maNV) REFERENCES tblNhanVien28(maNV),
+    FOREIGN KEY (IDHoaDonXuat) REFERENCES tblHoaDonXuat28(ID)
+);
+
+-- Bảng Mặt hàng xuất (Chi tiết các mặt hàng trong hóa đơn)
+CREATE TABLE tblMatHangXuat28 (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    maHang VARCHAR(50),
+    IDHoaDonXuatHang INT,
+    soLuongXuat INT,
+    donGia VARCHAR(50), -- Sử dụng VARCHAR để lưu "5.000VNĐ/cái"
+    thanhTien VARCHAR(50), -- Sử dụng VARCHAR để lưu "1.000.000VNĐ"
+    FOREIGN KEY (IDHoaDonXuatHang) REFERENCES tblHoaDonXuatHang28(ID),
+    FOREIGN KEY (maHang) REFERENCES tblHangHoa28(maHang)
+);
+
+
+-- BƯỚC 3: THÊM DỮ LIỆU BAN ĐẦU GIỐNG HỆT TRONG TÀI LIỆU WORD
+
+-- Thêm dữ liệu cho Nhân viên
+INSERT INTO tblNhanVien28 (maNV, hoTenNV, matKhau) VALUES 
+('NV001', 'Phạm Việt Hoàng', '123456');
+
+-- Thêm dữ liệu cho Đại lý con (trang 28)
+INSERT INTO tblDaiLyCon28 (maDL, tenDL, diaChi, soDT) VALUES
+('D070', 'Cửa hàng vật liệu điện Thu Mùi', 'Số 58 Phùng Hưng, Phúc La, Hà Đông, Hà Nội', '0915112781'),
+('D071', 'Cửa hàng vật liệu điện Thu Mùi', 'Số 58 Phùng Hưng, Hàng Mã, Hoàn Kiếm, Hà Nội', '0971132856'),
+('TH010', 'Cửa hàng tạp hóa Hòa Thạc', 'Số 87 Phan Bá Vành, Cầu Diễn, Từ Liêm, Hà Nội', '0989918570'),
+('XD001', 'Cửa hàng vật liệu xây dựng – trang trí nội thất Thành Công', 'Số 25A đường Lê Đức Thọ kéo dài, Mai Dịch, Cầu Giấy, Hà Nội', '0982616689'),
+('XD002', 'Cửa hàng vật liệu xây dựng Tuấn Hương', 'Số 324 Phạm Văn Đồng, Cổ Nhuệ, Bắc Từ Liêm, Hà Nội', '02438361739');
+
+-- Thêm dữ liệu cho Hàng hóa (trang 29)
+INSERT INTO tblHangHoa28 (maHang, tenHang, moTa, soLuongTrongKho) VALUES
+('BD001', 'Băng dính 1 mặt', 'Loại nhỏ', 1000),
+('BD002', 'Băng dính 2 mặt', 'Loại nhỏ', 1000),
+('BDD010', 'Băng dính điện', 'Màu đen', 500),
+('NL001', 'Túi nilon 2kg', 'Null', 0),
+('NL002', 'Túi nilon 5kg', 'Null', 20),
+('G001', 'Gạch hoa lát nền nhà', 'Null', 1500),
+('XM001', 'Xi măng Bỉm Sơn', 'Null', 2000),
+('XM002', 'Xi măng Hà Tiên', 'Null', 2000);
+
